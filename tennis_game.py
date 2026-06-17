@@ -16,6 +16,13 @@ Scoring rules:
 
 from __future__ import annotations
 
+import os
+import random
+from pathlib import Path
+
+#: Directory where per-point touch files are stored (project root).
+_POINTS_DIR = Path(__file__).parent
+
 #: Names for the first four points won by a player.
 POINT_NAMES = ("Love", "15", "30", "40")
 
@@ -42,6 +49,7 @@ class TennisGame:
                 f"{self.player1_name!r} or {self.player2_name!r}."
             )
         self._points[player_name] += 1
+        self._touch_point_file(player_name)
 
     def get_score(self) -> str:
         """Return the current score as a human-readable string."""
@@ -68,6 +76,21 @@ class TennisGame:
     def _leader(self, p1: int, p2: int) -> str:
         """Return the name of the player currently in the lead."""
         return self.player1_name if p1 > p2 else self.player2_name
+
+    # ------------------------------------------------------------------
+    # Internal helpers
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _touch_point_file(player_name: str) -> None:
+        """Create an empty file in *points/* to mark that *player_name* won a point.
+
+        The filename is ``<player_name>_<NN>`` where ``NN`` is a zero-padded
+        two-digit random number (00-99).
+        """
+        suffix = random.randint(0, 99)
+        filename = _POINTS_DIR / f"{player_name}_{suffix:02d}"
+        filename.touch()
 
 
 if __name__ == "__main__":
