@@ -12,6 +12,8 @@ game.won_point("player1")
 game.get_score()  # -> "15-Love"
 ```
 
+## Tenis rules
+
 ## Scoring rules
 
 | Situation | Output |
